@@ -256,12 +256,12 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, w in storage.all().items():
+            for k, v in storage.all().items():
                 if k.split('.')[0] == args:
-                    print_list.append(str(w))
+                    print_list.append(str(v))
         else:
-            for k, w in storage.all().items():
-                print_list.append(str(w))
+            for k, v in storage.all().items():
+                print_list.append(str(v))
 
         print(print_list)
 
@@ -273,7 +273,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """This counts current number of class instances"""
         count = 0
-        for k, w in storage.all().items():
+        for k, v in storage.all().items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
@@ -316,10 +316,11 @@ class HBNBCommand(cmd.Cmd):
         # This first determines if its kwargs or args
         if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
             kwargs = eval(args[2])
-            args = []  # This reformats kwargs into list, ex: [<name>, <value>, ...]
-            for k, w in kwargs.items():
+            args = []  # This reformats kwargs into list,
+			#ex: [<name>, <value>, ...]
+            for k, v in kwargs.items():
                 args.append(k)
-                args.append(w)
+                args.append(v)
         else:  # The isolate args
             args = args[2]
             if args and args[0] == '\"':  # This checks for quoted arg
