@@ -9,7 +9,6 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.sql.schema import Table
 from sqlalchemy.orm import relationship
 
-
 if storage_type == 'db':
     place_amenity = Table('place_amenity', Base.metadata,
                           Column('place_id', String(60),
@@ -21,7 +20,6 @@ if storage_type == 'db':
                                  primary_key=True,
                                  nullable=False)
                           )
-
 
 class Place(BaseModel, Base):
     """ The place to stay """
@@ -37,10 +35,11 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, nullable=False, default=0)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
+
         reviews = relationship('Review', backref='place',
                                cascade='all, delete, delete-orphan')
         amenities = relationship('Amenity', secondary=place_amenity,
-                                 viewonly=False, backref='place_amenities')
+                                 viewonly=False, backref='places')
     else:
         city_id = ""
         user_id = ""
@@ -54,12 +53,7 @@ class Place(BaseModel, Base):
         longitude = 0.0
         amenity_ids = []
 
-        @property
-        def reviews(self):
-            ''' This returns list of review instances with place_id
-                equals to the cyrrent Place.id
-                FileStorage relationship between Place and Review
-            '''
+        def get_reviews(self):
             from models import storage
             all_revs = storage.all(Review)
             lst = []
@@ -68,12 +62,7 @@ class Place(BaseModel, Base):
                     lst.append(rev)
             return lst
 
-        @property
-        def amenities(self):
-            ''' This returns the list of Amenity instances
-                based on the attribute amenity_ids that
-                contains all Amenity.id linked to the Place
-            '''
+        def get_amenities(self):
             from models import storage
             all_amens = storage.all(Amenity)
             lst = []
@@ -82,13 +71,9 @@ class Place(BaseModel, Base):
                     lst.append(amen)
             return lst
 
-        @amenities.setter
-        def amenities(self, obj):
-            ''' This is the method for adding an Amenity.id to the
-                attribute amenity_ids. accepts only Amenity
-                objects
-            '''
+        def set_amenities(self, obj):
             if obj is not None:
                 if isinstance(obj, Amenity):
                     if obj.id not in self.amenity_ids:
                         self.amenity_ids.append(obj.id)
+
