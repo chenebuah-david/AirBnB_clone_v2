@@ -6,7 +6,6 @@ from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-
 class State(BaseModel, Base):
     """ This is the State class / table model"""
     __tablename__ = 'states'
@@ -17,8 +16,7 @@ class State(BaseModel, Base):
     else:
         name = ''
 
-        @property
-        def cities(self):
+        def get_cities(self):
             '''This will return the list of City instances with state_id
                 equals the current State.id
                 FileStorage relationship between State and City
