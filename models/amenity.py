@@ -1,14 +1,17 @@
 #!/usr/bin/python3
-""" This is the State Module for HBNB project """
+""" This is the Review module for the HBNB project """
 from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 from models import storage_type
-from sqlalchemy import Column, String
 
-
-class Amenity(BaseModel, Base):
-    '''This is the amenity class'''
-    __tablename__ = 'amenities'
+class Review(BaseModel, Base):
+    """ This class is used to store review information """
+    __tablename__ = 'reviews'
     if storage_type == 'db':
-        name = Column(String(128), nullable=False)
+        text = Column(String(1024), nullable=False)
+        place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
+        user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     else:
-        name = ""
+        place_id = ""
+        user_id = ""
+        text = ""
